@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendMail;
-use App\Mail\SendVerifyEmail;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -89,22 +88,20 @@ class AuthController extends Controller
     {
         $user = auth('sanctum')->user();
 
-        dd($user);
-        // try {
-        //     Auth::routes(['verify' => true]);
-        //     $user = User::find($request->id);
+        try {
+            Auth::routes(['verify' => true]);
 
-        //     if ($user->hasVerifiedEmail()) {
-        //         return view('auth.verify', ['model' => $user]);
-        //     }
+            if ($user->hasVerifiedEmail()) {
+                return view('auth.verify', ['model' => $user]);
+            }
 
-        //     if ($user->markEmailAsVerified()) {
-        //         event(new Verified($user));
-        //     }
+            if ($user->markEmailAsVerified()) {
+                event(new Verified($user));
+            }
 
-        //     return view('auth.verify', ['model' => $user]);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+            return view('auth.verify', ['model' => $user]);
+        } catch (\Throwable $th) {
+             throw $th;
+        }
     }
 }
